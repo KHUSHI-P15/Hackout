@@ -4,7 +4,7 @@ import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { fetchPost } from '../../utils/fetch.utils';
 import { Avatar } from 'primereact/avatar';
-import logo from '../../images/skillScript.png';
+import logo from '../../assets/image.png';
 import { Link } from 'react-router-dom';
 
 const ForgotPassword = () => {
