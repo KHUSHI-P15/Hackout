@@ -13,6 +13,7 @@ const { errorHandler, asyncRouteHandler } = require('./utils/route.utils');
 
 // include routes here
 const authRoutes = require('./routes/auth.route');
+const citizensRoutes = require('./routes/citizens.route');
 const communityRoutes = require('./routes/community.route');
 // const facultyRoutes = require('./routes/faculty.route');
 // const studentRoutes = require('./routes/student.route');
@@ -28,7 +29,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(cookieParser());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 app.use(
 	session({
@@ -43,6 +45,7 @@ app.use(
 // 	res.json({ message: 'Welcome to the server!' });
 // });
 app.use('/auth', authRoutes);
+app.use('/citizen', citizensRoutes);
 app.use('/community', communityRoutes);
 // app.use('/faculty', facultyRoutes);
 // app.use('/student', studentRoutes);

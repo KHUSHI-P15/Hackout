@@ -6,6 +6,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Registration';
 import ForgotPassword from './pages/auth/ForgetPassword';
 import CitizenDashboard from './pages/citizens/Dashboard';
+import CreateReport from './pages/citizens/createReport';
 import NGOReportsPage from './pages/ngo/VerifyReports';
 import NGODashboard from './pages/ngo/Dashboard';
 import CommunityPage from './pages/ngo/Community';
@@ -13,22 +14,22 @@ import History from './pages/citizens/History';
 const routes = createBrowserRouter([
 	{
 		path: '/',
-		loader: loginLoader,
+		// loader: loginLoader,
 		element: <Login />,
 	},
 	{
 		path: '/login',
-		loader: loginLoader,
+		// loader: loginLoader,
 		element: <Login />,
 	},
 	{
 		path: '/register',
-		loader: loginLoader,
+		// loader: loginLoader,
 		element: <Register />,
 	},
 	{
 		path: '/forgot-password',
-		loader: loginLoader,
+		// loader: loginLoader,
 		element: <ForgotPassword />,
 	},
 	// Admin routes
@@ -52,6 +53,7 @@ const routes = createBrowserRouter([
 		errorElement: <ErrorElement />,
 		children: [
 			{ path: 'dashboard', element: <CitizenDashboard /> },
+			{ path: 'add-report', element: <CreateReport /> },
 			{ path: 'history', element: <History /> },
 			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
 			// {
