@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 
 const roleMap = {
 	CITIZEN: 'citizen',
-	NGOS: 'ngo',
-	RESEARCHERS: 'researcher',
+	NGO: 'ngo', // 🔥 change "NGOS" → "NGO"
+	RESEARCHER: 'researcher', // 🔥 singular not plural
 	GOVERNMENT: 'government',
 };
 

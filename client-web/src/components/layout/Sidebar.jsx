@@ -52,7 +52,7 @@ export default function Sidebar({ isVisible, onClose }) {
 		ngo: [
 			{ name: 'Dashboard', route: '/ngo/dashboard', icon: 'LayoutDashboard' },
 			{ name: 'Verify Reports', route: '/ngo/verify-reports', icon: 'CheckCheck' },
-			{ name: 'Add Post', route: '/ngo/add-post', icon: 'PenSquare' },
+			{ name: 'Community', route: '/ngo/community', icon: 'PenSquare' },
 			{ name: 'Leaderboard', route: '/ngo/leaderboard', icon: 'Trophy' },
 		],
 		government: [

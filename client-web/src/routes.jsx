@@ -6,6 +6,10 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Registration';
 import ForgotPassword from './pages/auth/ForgetPassword';
 import CitizenDashboard from './pages/citizens/Dashboard';
+import NGOReportsPage from './pages/ngo/VerifyReports';
+import NGODashboard from './pages/ngo/Dashboard';
+import CommunityPage from './pages/ngo/Community';
+import History from './pages/citizens/History';
 const routes = createBrowserRouter([
 	{
 		path: '/',
@@ -48,7 +52,22 @@ const routes = createBrowserRouter([
 		errorElement: <ErrorElement />,
 		children: [
 			{ path: 'dashboard', element: <CitizenDashboard /> },
-			// { path: 'institute', element: <InstituteList /> },
+			{ path: 'history', element: <History /> },
+			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
+			// {
+			// 	path: 'institute/:instituteId/department/:departmentId',
+			// 	element: <FacultyAndStudentList />,
+			// },
+		],
+	},
+	{
+		path: '/ngo',
+		// loader: verifyLoader('citizen'),
+		errorElement: <ErrorElement />,
+		children: [
+			{ path: 'dashboard', element: <NGODashboard /> },
+			{ path: 'verify-reports', element: <NGOReportsPage /> },
+			{ path: 'community', element: <CommunityPage /> },
 			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
 			// {
 			// 	path: 'institute/:instituteId/department/:departmentId',

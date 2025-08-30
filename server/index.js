@@ -13,6 +13,7 @@ const { errorHandler, asyncRouteHandler } = require('./utils/route.utils');
 
 // include routes here
 const authRoutes = require('./routes/auth.route');
+const communityRoutes = require('./routes/community.route');
 // const facultyRoutes = require('./routes/faculty.route');
 // const studentRoutes = require('./routes/student.route');
 // const subjectRoutes = require('./routes/subject.route');
@@ -42,6 +43,7 @@ app.use(
 // 	res.json({ message: 'Welcome to the server!' });
 // });
 app.use('/auth', authRoutes);
+app.use('/community', communityRoutes);
 // app.use('/faculty', facultyRoutes);
 // app.use('/student', studentRoutes);
 // app.use('/subject', subjectRoutes);
