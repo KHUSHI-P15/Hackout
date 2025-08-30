@@ -15,16 +15,27 @@ const ReportSchema = new mongoose.Schema(
 			lng: Number,
 			address: String,
 		},
-		media: [{ type: String }], // photo/video URLs
-		aiVerified: { type: Boolean, default: false }, // AI-based validation
+		media: [{ type: String }], // photo
+		aiVerified: { type: Boolean, default: true },
 		status: {
 			type: String,
 			enum: ['pending', 'verified', 'in-progress', 'resolved'],
 			default: 'pending',
 		},
-		verifiedByNGO: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // NGO role
-		resolvedByGov: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Gov role
-		govReply: { type: String }, // Gov response / attachment link
+		severity: {
+			type: String,
+			enum: ['low', 'medium', 'high'],
+			default: 'low', // optional: you can remove default if you want it mandatory
+		},
+		verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // NGO role
+		resolvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Gov role or NGO
+		govReplies: [
+			{
+				text: String,
+				attachments: [String],
+				repliedAt: { type: Date, default: Date.now },
+			},
+		],
 	},
 	{ timestamps: true }
 );
