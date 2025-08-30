@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "leaflet": "^1.9.4",
+    "leaflet-control-geocoder": "^3.3.0",
     "lucide-react": "^0.542.0",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.7",

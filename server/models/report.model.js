@@ -9,7 +9,7 @@ const ReportSchema = new mongoose.Schema(
 			enum: ['cutting', 'dumping', 'encroachment', 'pollution', 'other'],
 			required: true,
 		},
-		createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+		createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
 		location: {
 			lat: Number,
 			lng: Number,
