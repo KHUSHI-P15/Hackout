@@ -12,12 +12,19 @@ export async function fetchPost({
 
 	try {
 		const token = localStorage.getItem('token');
+		console.log('fetchPost - contentType:', contentType);
+		console.log('fetchPost - contentType !== undefined:', contentType !== undefined);
+		
+		const headers = {
+			...(token && { Authorization: 'Bearer ' + token }),
+			...(contentType !== undefined ? { 'Content-Type': contentType } : {}),
+		};
+		
+		console.log('fetchPost - final headers:', headers);
+		
 		const response = await fetch(apiURL + pathName, {
 			method,
-			headers: {
-				...(token && { Authorization: 'Bearer ' + token }),
-				'Content-Type': contentType,
-			},
+			headers,
 			body,
 		});
 

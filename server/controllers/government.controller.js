@@ -18,20 +18,40 @@ exports.resolveReport = async (req, res) => {
 	console.log('---- resolveReport called ----');
 	console.log('req.params:', req.params);
 	console.log('req.body:', req.body);
-	console.log('req.file:', req.file);
+	console.log('req.files:', req.files);
+	console.log('req.headers:', req.headers);
+	console.log('req.method:', req.method);
+
+	// Check if req.body is undefined and handle it
+	if (!req.body) {
+		console.log('⚠️ req.body is undefined');
+		return res.status(400).json({ 
+			success: false, 
+			message: 'Request body is undefined. Check content-type and multer configuration.' 
+		});
+	}
 
 	try {
-		const { responseText, govUserId, status } = req.body;
+		const { responseText, resolvedBy, status } = req.body;
+
+		if (!responseText) {
+			return res.status(400).json({ 
+				success: false, 
+				message: 'responseText is required' 
+			});
+		}
 
 		const report = await Report.findById(req.params.id);
 		if (!report) {
 			return res.status(404).json({ success: false, message: 'Report not found' });
 		}
 
-		const attachment = req.file ? req.file.filename : null;
+		// Handle file from any() upload - files are in an array
+		const responseFile = req.files && req.files.find(file => file.fieldname === 'responseFile');
+		const attachment = responseFile ? responseFile.filename : null;
 
 		report.status = status || 'resolved';
-		report.resolvedBy = govUserId;
+		report.resolvedBy = resolvedBy;
 		report.govReplies.push({
 			text: responseText,
 			attachments: attachment ? [attachment] : [],

@@ -36,12 +36,12 @@ async function addReport(req, res, next) {
 
 		// Get user ID from auth middleware (if available) or from request body
 		let createdBy = res.locals.user?.userId || req.body.createdBy;
-		
+
 		// If no user ID, create/find an anonymous user for data consistency
 		if (!createdBy) {
 			const User = require('../models/user.model');
 			let anonymousUser = await User.findOne({ email: 'anonymous@system.local' });
-			
+
 			if (!anonymousUser) {
 				// Create anonymous user for tracking purposes
 				anonymousUser = new User({
@@ -55,7 +55,7 @@ async function addReport(req, res, next) {
 				await anonymousUser.save();
 				console.log('📝 Created anonymous user for report tracking');
 			}
-			
+
 			createdBy = anonymousUser._id;
 			console.log('⚠️ Report created by anonymous user');
 		}

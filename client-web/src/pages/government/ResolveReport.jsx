@@ -5,7 +5,7 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import PageLayout from '../../components/layout/PageLayout';
-import { fetchGet, fetchPost } from '../../utils/fetch.utils';
+import { fetchGet } from '../../utils/fetch.utils';
 
 export default function ResolveReport() {
 	const [reports, setReports] = useState([]);
@@ -62,23 +62,31 @@ export default function ResolveReport() {
 			formData.append('resolvedBy', govUserId);
 			formData.append('status', 'resolved');
 
-			console.log('FormData:', {
-				responseText,
-				responseFile: responseFile?.name,
-				govUserId,
-				status: 'resolved',
-			});
+			console.log('FormData contents:');
+			for (let [key, value] of formData.entries()) {
+				console.log(`${key}:`, value);
+			}
 
-			const response = await fetchPost({
-				pathName: `government/${selectedReport._id}/resolve`,
+			// Direct fetch call without utility to avoid any caching issues
+			const token = localStorage.getItem('token');
+			const apiURL = import.meta.env.VITE_URL;
+			
+			const response = await fetch(`${apiURL}government/${selectedReport._id}/resolve`, {
+				method: 'POST',
+				headers: {
+					...(token && { Authorization: 'Bearer ' + token }),
+					// Deliberately NOT setting Content-Type to let browser handle FormData
+				},
 				body: formData,
 			});
 
-			if (response.success === false) {
+			const result = await response.json();
+
+			if (result.success === false) {
 				toast.current.show({
 					severity: 'error',
 					summary: 'Error',
-					detail: response.message || 'Failed to resolve report',
+					detail: result.message || 'Failed to resolve report',
 				});
 				return;
 			}
@@ -204,10 +212,10 @@ export default function ResolveReport() {
 							<p>
 								<b>Escalation Date:</b> {selectedReport.escalationDate}
 							</p>
-							{selectedReport.media.length > 0 && (
+							{Array.isArray(selectedReport.media) && selectedReport.media.length > 0 && (
 								<div>
 									<b>Attachments:</b>
-									<div className="flex gap-2 mt-1">
+									<div className="flex gap-2">
 										{selectedReport.media.map((file, idx) => (
 											<a
 												key={idx}
@@ -236,10 +244,9 @@ export default function ResolveReport() {
 								<input
 									type="file"
 									onChange={(e) => setResponseFile(e.target.files[0])}
-									className="mt-2"
 								/>
 							</div>
-							<div className="flex justify-end mt-4">
+							<div className="flex justify-end">
 								<Button
 									label="Submit Response & Resolve"
 									icon="pi pi-check"

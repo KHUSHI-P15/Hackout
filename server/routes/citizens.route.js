@@ -16,25 +16,28 @@ router.post(
 );
 
 // Test endpoint to check AI service
-router.get('/test-ai', asyncRouteHandler(async (req, res) => {
-	try {
-		const MangroveAIService = require('../services/ai.service');
-		const aiService = new MangroveAIService();
-		
-		const testResult = await aiService.testService();
-		
-		res.json({
-			success: true,
-			message: 'AI service is working',
-			testResult: testResult
-		});
-	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'AI service test failed',
-			error: error.message
-		});
-	}
-}));
+router.get(
+	'/test-ai',
+	asyncRouteHandler(async (req, res) => {
+		try {
+			const MangroveAIService = require('../services/ai.service');
+			const aiService = new MangroveAIService();
+
+			const testResult = await aiService.testService();
+
+			res.json({
+				success: true,
+				message: 'AI service is working',
+				testResult: testResult,
+			});
+		} catch (error) {
+			res.status(500).json({
+				success: false,
+				message: 'AI service test failed',
+				error: error.message,
+			});
+		}
+	})
+);
 
 module.exports = router;

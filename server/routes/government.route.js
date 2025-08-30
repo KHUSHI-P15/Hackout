@@ -6,7 +6,7 @@ const { upload } = require('../utils/multer.utils'); // import multer
 // resolve report (with file + text)
 router.post(
 	'/:id/resolve',
-	upload.single('responseFile'), // 👈 this is the fix
+	upload.any(), // 👈 use any() to capture all fields
 	governmentController.resolveReport
 );
 
