@@ -5,31 +5,24 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
-// require('./utils/cron-job.utils');
-// const path = require('path');
 
 const { dbConnect } = require('./utils/db.utils');
-const { errorHandler, asyncRouteHandler } = require('./utils/route.utils');
+const { errorHandler } = require('./utils/route.utils');
 
 // include routes here
 const authRoutes = require('./routes/auth.route');
 const citizensRoutes = require('./routes/citizens.route');
 const communityRoutes = require('./routes/community.route');
 const ngoRoutes = require('./routes/ngo.route');
-// const facultyRoutes = require('./routes/faculty.route');
-// const studentRoutes = require('./routes/student.route');
-// const subjectRoutes = require('./routes/subject.route');
-// const adminRoutes = require('./routes/admin.route');
-// const hodRoutes = require('./routes/hod.route');
+const govtRoutes = require('./routes/government.route');
 
 const app = express();
 
 app.use(cors({ maxAge: 3600 }));
 app.use(express.static('public'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(cookieParser());
+
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
@@ -41,19 +34,14 @@ app.use(
 	})
 );
 
-//Routes
-// app.get('/', (req, res) => {
-// 	res.json({ message: 'Welcome to the server!' });
-// });
-app.use('/auth', authRoutes);
-app.use('/citizen', citizensRoutes);
-app.use('/community', communityRoutes);
-app.use('/ngo', ngoRoutes);
-// app.use('/faculty', facultyRoutes);
-// app.use('/student', studentRoutes);
-// app.use('/subject', subjectRoutes);
-// app.use('/admin', adminRoutes);
-// app.use('/hod', hodRoutes);
+// ✅ Apply JSON body parser ONLY to JSON routes
+app.use('/auth', express.json({ limit: '10mb' }), authRoutes);
+app.use('/citizen', express.json({ limit: '10mb' }), citizensRoutes);
+app.use('/community', express.json({ limit: '10mb' }), communityRoutes);
+app.use('/ngo', express.json({ limit: '10mb' }), ngoRoutes);
+
+// ✅ Do NOT attach express.json here (multipart handled by Multer)
+app.use('/government', govtRoutes);
 
 app.use(errorHandler);
 

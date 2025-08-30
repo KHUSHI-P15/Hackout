@@ -3,6 +3,13 @@ const router = express.Router();
 const ngoController = require('../controllers/ngo.controller');
 const { authMiddleware } = require('../middleware/auth.middleware');
 
+// Route to get all reports for DataTable
+router.get('/', ngoController.getAllReports);
+
+// Route to send report to government
+router.post('/send-to-government', ngoController.sendToGovernment);
+
+
 // Apply authentication middleware to all NGO routes
 router.use(authMiddleware(['ngo'])); // Only allow NGO users
 

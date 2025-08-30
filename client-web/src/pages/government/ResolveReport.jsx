@@ -1,49 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
 import PageLayout from '../../components/layout/PageLayout';
+import { fetchGet, fetchPost } from '../../utils/fetch.utils';
 
-const ResolveReport = () => {
+export default function ResolveReport() {
 	const [reports, setReports] = useState([]);
-	const [viewReport, setViewReport] = useState(null);
-	const [resolveReport, setResolveReport] = useState(null);
+	const [selectedReport, setSelectedReport] = useState(null);
+	const [visible, setVisible] = useState(false);
 	const [responseText, setResponseText] = useState('');
 	const [responseFile, setResponseFile] = useState(null);
+	const toast = useRef(null);
+	const govUserId = '68b26297ff38bbe3daac6805';
 
 	useEffect(() => {
-		setReports([
-			{
-				_id: 1,
-				title: 'Mangrove Degradation at Riverbank',
-				location: 'Gadhada',
-				createdBy: { name: 'Green Earth NGO' },
-				severity: 'High',
-				description: 'Large area of mangrove trees cut down illegally.',
-				media: ['https://via.placeholder.com/100'],
-				resolved: false,
-				escalationDate: '2025-09-05',
-			},
-			{
-				_id: 2,
-				title: 'Pollution Alert near Coastal Area',
-				location: 'Bhavnagar',
-				createdBy: { name: 'EcoWatch' },
-				severity: 'Medium',
-				description: 'Industrial waste found in nearby water body.',
-				media: [],
-				resolved: false,
-				escalationDate: '2025-09-08',
-			},
-			{
-				_id: 3,
-				title: 'Illegal Dumping near Mangrove Area',
-				location: 'Junagadh',
-				createdBy: { name: 'NatureCare NGO' },
-				severity: 'Low',
-				description: 'Household waste dumped near mangrove trees.',
-				media: [],
-				resolved: false,
-				escalationDate: '2025-09-10',
-			},
-		]);
+		const loadReports = async () => {
+			const response = await fetchGet({ pathName: 'government' });
+			if (response.success === false) {
+				toast.current.show({
+					severity: 'error',
+					summary: 'Error',
+					detail: response.message || 'Failed to fetch reports',
+				});
+				return;
+			}
+			setReports(response);
+		};
+		loadReports();
 	}, []);
 
 	const severityColor = (severity) => {
@@ -59,205 +45,216 @@ const ResolveReport = () => {
 		}
 	};
 
-	const handleResolveSubmit = (reportId) => {
-		setReports((prev) => prev.filter((r) => r._id !== reportId));
-		setResolveReport(null);
-		setResponseText('');
-		setResponseFile(null);
+	const handleResolveSubmit = async () => {
+		if (!responseText || responseText.trim() === '') {
+			toast.current.show({
+				severity: 'error',
+				summary: 'Error',
+				detail: 'Response text cannot be empty',
+			});
+			return;
+		}
+
+		try {
+			const formData = new FormData();
+			formData.append('responseText', responseText);
+			if (responseFile) formData.append('responseFile', responseFile);
+			formData.append('resolvedBy', govUserId);
+			formData.append('status', 'resolved');
+
+			console.log('FormData:', {
+				responseText,
+				responseFile: responseFile?.name,
+				govUserId,
+				status: 'resolved',
+			});
+
+			const response = await fetchPost({
+				pathName: `government/${selectedReport._id}/resolve`,
+				body: formData,
+			});
+
+			if (response.success === false) {
+				toast.current.show({
+					severity: 'error',
+					summary: 'Error',
+					detail: response.message || 'Failed to resolve report',
+				});
+				return;
+			}
+
+			toast.current.show({
+				severity: 'success',
+				summary: 'Success',
+				detail: `Report "${selectedReport.title}" resolved successfully`,
+			});
+
+			setReports((prev) => prev.filter((r) => r._id !== selectedReport._id));
+			setVisible(false);
+			setResponseText('');
+			setResponseFile(null);
+		} catch (error) {
+			console.error('Error resolving report:', error);
+			toast.current.show({
+				severity: 'error',
+				summary: 'Error',
+				detail: 'Failed to resolve report: ' + error.message,
+			});
+		}
 	};
+
+	const actionBodyTemplate = (rowData) => (
+		<Button
+			icon="pi pi-external-link"
+			className="p-button-rounded"
+			style={{ backgroundColor: '#336699', border: 'none' }}
+			onClick={() => {
+				setSelectedReport(rowData);
+				setResponseText('');
+				setResponseFile(null);
+				setVisible(true);
+			}}
+		/>
+	);
+
+	const severityTemplate = (rowData) => (
+		<span className={`px-2 py-1 rounded ${severityColor(rowData.severity)}`}>
+			{rowData.severity}
+		</span>
+	);
 
 	return (
 		<PageLayout>
-			<div className="min-h-screen bg-gray-50 p-6">
-				<h1 className="text-3xl font-bold mb-6">Resolve Reports</h1>
+			<div className="p-6">
+				<Toast ref={toast} />
+				<h2 className="text-4xl font-semibold mb-4 text-[#336699]">
+					Resolve Verified Reports
+				</h2>
 
-				<div className="grid gap-6">
-					{reports.map((report) => (
-						<div
-							key={report._id}
-							className={`bg-white shadow rounded-lg p-6 border-l-4 ${
-								report.severity === 'High'
-									? 'border-red-600'
-									: report.severity === 'Medium'
-									? 'border-orange-500'
-									: 'border-green-600'
-							}`}
-						>
-							<div className="flex justify-between items-center mb-2">
-								{/* Left: Title and Escalation Date */}
+				<DataTable
+					value={reports}
+					paginator
+					rows={5}
+					responsiveLayout="scroll"
+					className="overflow-hidden shadow"
+				>
+					<Column
+						field="title"
+						header="Title"
+						sortable
+						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+					/>
+					<Column
+						field="location.address"
+						header="Location"
+						sortable
+						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+					/>
+					<Column
+						field="createdBy.name"
+						header="Submitted By"
+						sortable
+						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+						body={(rowData) => rowData.createdBy?.name || 'Unknown'}
+					/>
+					<Column
+						field="severity"
+						header="Severity"
+						sortable
+						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+						body={severityTemplate}
+					/>
+					<Column
+						field="escalationDate"
+						header="Escalation Date"
+						sortable
+						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+					/>
+					<Column
+						body={actionBodyTemplate}
+						header="Action"
+						style={{ textAlign: 'center', width: '8rem' }}
+						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+					/>
+				</DataTable>
+
+				<Dialog
+					header={<span style={{ color: '#336699' }}>Resolve Report</span>}
+					visible={visible}
+					style={{ width: '50vw' }}
+					onHide={() => setVisible(false)}
+				>
+					{selectedReport && (
+						<div className="space-y-3">
+							<p>
+								<b>Title:</b> {selectedReport.title}
+							</p>
+							<p>
+								<b>Description:</b> {selectedReport.description}
+							</p>
+							<p>
+								<b>Location:</b> {selectedReport.location?.address}
+							</p>
+							<p>
+								<b>Submitted By:</b> {selectedReport.createdBy?.name || 'Unknown'}
+							</p>
+							<p>
+								<b>Severity:</b> {selectedReport.severity}
+							</p>
+							<p>
+								<b>Escalation Date:</b> {selectedReport.escalationDate}
+							</p>
+							{selectedReport.media.length > 0 && (
 								<div>
-									<h2 className="text-xl font-semibold">{report.title}</h2>
-									<p className="text-sm text-gray-500">
-										Escalation: {report.escalationDate}
-									</p>
-								</div>
-
-								{/* Right: Severity Badge */}
-								<span
-									className={`px-2 py-1 rounded ${severityColor(
-										report.severity
-									)}`}
-								>
-									{report.severity}
-								</span>
-							</div>
-
-							{/* Buttons below */}
-							<div className="flex gap-2 mt-4">
-								<button
-									className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-									onClick={() => setViewReport(report)}
-								>
-									View Details
-								</button>
-								<button
-									className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-									onClick={() => setResolveReport(report)}
-								>
-									Resolve
-								</button>
-							</div>
-						</div>
-					))}
-				</div>
-
-				{/* View Details Modal */}
-				{viewReport && (
-					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-						<div className="bg-white rounded-lg p-6 w-11/12 md:w-2/3 max-h-[90vh] overflow-y-auto">
-							<div className="flex justify-between items-center mb-4">
-								<h2 className="text-2xl font-bold">{viewReport.title}</h2>
-								<button
-									className="text-gray-500 hover:text-gray-700"
-									onClick={() => setViewReport(null)}
-								>
-									Close
-								</button>
-							</div>
-							<div className="grid gap-4">
-								<div className="flex justify-between">
-									<p className="font-semibold">Submitted by:</p>
-									<p>{viewReport.createdBy?.name}</p>
-								</div>
-								<div className="flex justify-between">
-									<p className="font-semibold">Location:</p>
-									<p>{viewReport.location}</p>
-								</div>
-								<div className="flex justify-between">
-									<p className="font-semibold">Severity:</p>
-									<p>{viewReport.severity}</p>
-								</div>
-								<div className="flex justify-between">
-									<p className="font-semibold">Escalation Date:</p>
-									<p>{viewReport.escalationDate}</p>
-								</div>
-								<div>
-									<p className="font-semibold">Description:</p>
-									<p>{viewReport.description}</p>
-								</div>
-								{viewReport.media.length > 0 && (
-									<div>
-										<p className="font-semibold">Attachments:</p>
-										<div className="flex gap-2 mt-1">
-											{viewReport.media.map((file, idx) => (
-												<a
-													key={idx}
-													href={file}
-													target="_blank"
-													rel="noopener noreferrer"
-													className="text-blue-500 underline text-sm"
-												>
-													Attachment {idx + 1}
-												</a>
-											))}
-										</div>
+									<b>Attachments:</b>
+									<div className="flex gap-2 mt-1">
+										{selectedReport.media.map((file, idx) => (
+											<a
+												key={idx}
+												href={file}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-blue-500 underline text-sm"
+											>
+												Attachment {idx + 1}
+											</a>
+										))}
 									</div>
-								)}
+								</div>
+							)}
+							<div>
+								<b>Response:</b>
+								<textarea
+									className="w-full border p-2 rounded mt-2"
+									placeholder="Enter your response"
+									value={responseText}
+									onChange={(e) => setResponseText(e.target.value)}
+								/>
+							</div>
+							<div>
+								<b>Upload File:</b>
+								<input
+									type="file"
+									onChange={(e) => setResponseFile(e.target.files[0])}
+									className="mt-2"
+								/>
+							</div>
+							<div className="flex justify-end mt-4">
+								<Button
+									label="Submit Response & Resolve"
+									icon="pi pi-check"
+									style={{
+										backgroundColor: '#336699',
+										border: 'none',
+										color: 'white',
+									}}
+									onClick={handleResolveSubmit}
+								/>
 							</div>
 						</div>
-					</div>
-				)}
-
-				{/* Resolve Modal */}
-				{resolveReport && (
-					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-						<div className="bg-white rounded-lg p-6 w-11/12 md:w-2/3 max-h-[90vh] overflow-y-auto">
-							<div className="flex justify-between items-center mb-4">
-								<h2 className="text-2xl font-bold">{resolveReport.title}</h2>
-								<button
-									className="text-gray-500 hover:text-gray-700"
-									onClick={() => setResolveReport(null)}
-								>
-									Close
-								</button>
-							</div>
-							<div className="grid gap-4">
-								<div className="flex justify-between">
-									<p className="font-semibold">Submitted by:</p>
-									<p>{resolveReport.createdBy?.name}</p>
-								</div>
-								<div className="flex justify-between">
-									<p className="font-semibold">Location:</p>
-									<p>{resolveReport.location}</p>
-								</div>
-								<div className="flex justify-between">
-									<p className="font-semibold">Severity:</p>
-									<p>{resolveReport.severity}</p>
-								</div>
-								<div className="flex justify-between">
-									<p className="font-semibold">Escalation Date:</p>
-									<p>{resolveReport.escalationDate}</p>
-								</div>
-								<div>
-									<p className="font-semibold">Description:</p>
-									<p>{resolveReport.description}</p>
-								</div>
-								{resolveReport.media.length > 0 && (
-									<div>
-										<p className="font-semibold">Attachments:</p>
-										<div className="flex gap-2 mt-1">
-											{resolveReport.media.map((file, idx) => (
-												<a
-													key={idx}
-													href={file}
-													target="_blank"
-													rel="noopener noreferrer"
-													className="text-blue-500 underline text-sm"
-												>
-													Attachment {idx + 1}
-												</a>
-											))}
-										</div>
-									</div>
-								)}
-
-								{/* Response Section */}
-								<div className="mt-4">
-									<textarea
-										className="w-full border p-2 rounded mb-2"
-										placeholder="Enter your response"
-										value={responseText}
-										onChange={(e) => setResponseText(e.target.value)}
-									/>
-									<input
-										type="file"
-										onChange={(e) => setResponseFile(e.target.files[0])}
-										className="mb-2"
-									/>
-									<button
-										className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-										onClick={() => handleResolveSubmit(resolveReport._id)}
-									>
-										Submit Response & Resolve
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				)}
+					)}
+				</Dialog>
 			</div>
 		</PageLayout>
 	);
-};
-
-export default ResolveReport;
+}
