@@ -96,15 +96,9 @@ export default function Sidebar({ isVisible, onClose }) {
 	const links = roleRoutes[role] || [];
 
 	return (
-		<aside
-			className={`bg-gradient-to-b from-blue-100 to-gray-100 border-r border-gray-200 shadow-lg 
-    w-64 flex-shrink-0 flex flex-col justify-between 
-transition-transform duration-300 ease-in-out 
-    fixed top-20 left-0 z-30 h-[calc(100vh-5rem)]
-     ${isVisible ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
-		>
+		<>
 			<ConfirmDialog />
-			<nav className="px-6 py-4 space-y-2 overflow-y-auto flex-1">
+			<nav className="px-6 py-4 space-y-2 flex-1">
 				{links.map((link) => {
 					const IconComponent = iconMap[link.icon];
 					return (
@@ -137,6 +131,6 @@ transition-transform duration-300 ease-in-out
 					className="w-full p-button-text text-lg text-red-600 hover:bg-red-100 hover:text-red-700 transition-all"
 				/>
 			</div>
-		</aside>
+		</>
 	);
 }
