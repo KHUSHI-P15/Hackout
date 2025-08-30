@@ -1,92 +1,74 @@
 import React from 'react';
-import { Button } from 'primereact/button';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { Button } from 'primereact/button';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { useAuth } from '../../contexts/AuthContext';
 import {
-	CalendarCheck2,
 	LayoutDashboard,
-	Table2,
-	Group,
-	MonitorDot,
-	Tag,
-	MessageSquareHeart,
+	PlusCircle,
+	History,
+	Trophy,
+	Users,
+	CheckCheck,
+	PenSquare,
+	ShieldCheck,
+	CheckSquare,
+	BarChart2,
+	BookOpen,
 } from 'lucide-react';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { FaChalkboardTeacher, FaFileAlt } from 'react-icons/fa';
+
+// Ensure dependencies are installed:
+// npm install lucide-react react-router-dom primereact primeicons
+// Import primeicons CSS in index.js or App.js:
+// import 'primeicons/primeicons.css';
 
 export default function Sidebar({ isVisible, onClose }) {
 	const navigate = useNavigate();
-	const { logout, role } = useAuth();
-	// const role = 'faculty';
+	const { role, logout } = useAuth(); // Ensure AuthContext provides role and logout
 
-	const data = localStorage.getItem('data');
-	const instituteId = data ? JSON.parse(data)?.instituteId : null;
+	// Map icon names to components to avoid inline JSX in roleRoutes
+	const iconMap = {
+		LayoutDashboard: LayoutDashboard,
+		PlusCircle: PlusCircle,
+		History: History,
+		Trophy: Trophy,
+		Users: Users,
+		CheckCheck: CheckCheck,
+		PenSquare: PenSquare,
+		ShieldCheck: ShieldCheck,
+		CheckSquare: CheckSquare,
+		BarChart2: BarChart2,
+		BookOpen: BookOpen,
+	};
 
-	const roleBasedButtons = {
-		ADMIN: [
-			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/admin/dashboard',
-			},
-			{ label: 'Institutes', icon: 'pi pi-building', route: '/admin/institute' },
-			{ label: 'Tags', icon: <Tag />, route: '/admin/tags' },
-			{ label: 'Feedbacks', icon: <MessageSquareHeart />, route: '/admin/feedback' },
+	const roleRoutes = {
+		citizen: [
+			{ name: 'Dashboard', route: '/citizen/dashboard', icon: 'LayoutDashboard' },
+			{ name: 'Add Report', route: '/citizen/add-report', icon: 'PlusCircle' },
+			{ name: 'History', route: '/citizen/history', icon: 'History' },
+			{ name: 'Leaderboard', route: '/citizen/leaderboard', icon: 'Trophy' },
+			{ name: 'Community', route: '/citizen/community', icon: 'Users' },
 		],
-		'INSTITUTE-HEAD': [
-			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/hoi/dashboard',
-			},
-			{
-				label: 'Departments',
-				icon: 'pi pi-building',
-				route: `/hoi/department/${instituteId}`,
-			},
+		ngo: [
+			{ name: 'Dashboard', route: '/ngo/dashboard', icon: 'LayoutDashboard' },
+			{ name: 'Verify Reports', route: '/ngo/verify-reports', icon: 'CheckCheck' },
+			{ name: 'Add Post', route: '/ngo/add-post', icon: 'PenSquare' },
+			{ name: 'Leaderboard', route: '/ngo/leaderboard', icon: 'Trophy' },
 		],
-		'DEPARTMENT-HEAD': [
+		government: [
+			{ name: 'Dashboard', route: '/government/dashboard', icon: 'LayoutDashboard' },
 			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/hod/dashboard',
+				name: 'Verify NGOs/Researchers',
+				route: '/government/verify-entities',
+				icon: 'ShieldCheck',
 			},
-			{ label: 'Faculties', icon: <FaChalkboardTeacher size={23} />, route: '/hod/faculty' },
-			{ label: 'Students', icon: 'pi pi-users', route: '/hod/students' },
-			{ label: 'Groups', icon: <Group />, route: '/hod/groups' },
-			{ label: 'Subjects', icon: 'pi pi-book', route: '/hod/subjects' },
-			{ label: 'Tasks', icon: 'pi pi-list-check', route: '/hod/tasks' },
-			{ label: 'Questions', icon: 'pi pi-question-circle', route: '/hod/questions' },
-			{ label: 'Rubrics', icon: <Table2 />, route: '/hod/rubrics' },
-			{ label: 'Sessions', icon: <MonitorDot />, route: '/hod/sessions' },
+			{ name: 'Resolve Reports', route: '/government/resolve-reports', icon: 'CheckSquare' },
+			{ name: 'Data Insights', route: '/government/data-insights', icon: 'BarChart2' },
 		],
-		FACULTY: [
-			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/faculty/dashboard',
-			},
-			{ label: 'Tasks', icon: 'pi pi-list-check', route: '/faculty/tasks' },
-			{ label: 'Questions', icon: 'pi pi-question-circle', route: '/faculty/questions' },
-			{ label: 'Rubrics', icon: <Table2 />, route: '/faculty/rubrics' },
-			{ label: 'Groups', icon: <Group />, route: '/faculty/groups' },
-			{ label: 'Sessions', icon: <MonitorDot />, route: '/faculty/sessions' },
-			{ label: 'Report', icon: <FaFileAlt size={23} />, route: '/faculty/report' },
-		],
-		STUDENT: [
-			{
-				label: 'Dashboard',
-				icon: <LayoutDashboard size={23} />,
-				route: '/student/dashboard',
-			},
-			{ label: 'Upcoming', icon: 'pi pi-calendar-clock', route: '/student/upcoming-task' },
-			{
-				label: 'Available',
-				icon: <CalendarCheck2 size={23} />,
-				route: '/student/available-task',
-			},
-			{ label: 'History', icon: 'pi pi-history', route: '/student/history' },
-			{ label: 'Guidelines', icon: 'pi pi-book', route: '/student/guidelines' },
+		researcher: [
+			{ name: 'Dashboard', route: '/researcher/dashboard', icon: 'LayoutDashboard' },
+			{ name: 'Add Insights', route: '/researcher/add-insights', icon: 'BookOpen' },
+			{ name: 'Data Insights', route: '/researcher/data-insights', icon: 'BarChart2' },
 		],
 	};
 
@@ -110,57 +92,51 @@ export default function Sidebar({ isVisible, onClose }) {
 			reject: () => {},
 		});
 	};
-	const buttons = roleBasedButtons[role] || [];
+
+	const links = roleRoutes[role] || [];
 
 	return (
-		<>
+		<aside
+			className={`bg-gradient-to-b from-blue-100 to-gray-100 border-r border-gray-200 shadow-lg 
+    w-64 flex-shrink-0 flex flex-col justify-between 
+transition-transform duration-300 ease-in-out 
+    fixed top-20 left-0 z-30 h-[calc(100vh-5rem)]
+     ${isVisible ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
+		>
 			<ConfirmDialog />
-			<div className="h-full space-y-3.5 mt-4">
-				{buttons.map(({ label, icon, route }) =>
-					route === '#' ? (
-						<Button
-							key={label}
-							label={label}
-							icon={icon}
-							className="w-full text-xl font-semibold flex items-center gap-2 px-3 py-2 rounded p-button-text text-left text-disabled cursor-not-allowed opacity-60"
-							disabled
-						/>
-					) : (
+			<nav className="px-6 py-4 space-y-2 overflow-y-auto flex-1">
+				{links.map((link) => {
+					const IconComponent = iconMap[link.icon];
+					return (
 						<NavLink
-							key={label}
-							to={route}
+							key={link.name}
+							to={link.route}
+							onClick={onClose}
 							className={({ isActive }) =>
-								`w-full text-xl font-semibold my-auto flex items-center gap-2 px-3 py-2 rounded transition-all duration-300 ${
+								`flex items-center gap-4 px-5 py-3 rounded-xl font-semibold text-lg transition-all duration-300 ${
 									isActive
-										? 'bg-card text-primary shadow-md'
-										: 'text-white hover:bg-card hover:text-primary hover:shadow-md'
+										? 'bg-[#336699] text-white shadow-md'
+										: 'text-[#336699] hover:bg-[#336699]/10 hover:text-[#336699] hover:shadow'
 								}`
 							}
-							onClick={onClose}
 						>
-							<div className="flex gap-2.5 my-auto">
-								<span className="text-xl my-auto">
-									{typeof icon === 'string' ? (
-										<i className={icon} style={{ fontSize: '1.5rem' }}></i>
-									) : (
-										icon
-									)}
-								</span>
-								<span className="text-xl mb-0.5">{label}</span>
-							</div>
+							<span className="text-xl">
+								{IconComponent ? <IconComponent size={20} /> : null}
+							</span>
+							<span>{link.name}</span>
 						</NavLink>
-					)
-				)}
+					);
+				})}
+			</nav>
 
+			<div className="px-6 py-6 border-t border-gray-200">
 				<Button
-					label={<div className="text-xl font-semibold mb-1">Logout</div>}
-					icon={
-						<i className="pi pi-sign-out mr-1 my-auto" style={{ fontSize: '1.5rem' }} />
-					}
-					className="w-full my-auto p-button-text text-left text-white hover:bg-card hover:text-primary hover:shadow-md transition-all duration-300 [&_.pi]:text-xl gap-1"
+					icon="pi pi-sign-out"
+					label="Logout"
 					onClick={handleLogoutConfirm}
+					className="w-full p-button-text text-lg text-red-600 hover:bg-red-100 hover:text-red-700 transition-all"
 				/>
 			</div>
-		</>
+		</aside>
 	);
 }

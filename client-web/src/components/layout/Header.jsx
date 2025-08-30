@@ -1,61 +1,46 @@
 import React from 'react';
-import { Button } from 'primereact/button';
-import { Avatar } from 'primereact/avatar';
 import { useNavigate } from 'react-router-dom';
-// import logo from '../../images/skillScript.png';
+import { useAuth } from '../../contexts/AuthContext';
+import { Avatar } from 'primereact/avatar';
+import { Button } from 'primereact/button';
+import { Menu } from 'lucide-react';
+import logo from '../../assets/image.png'; // Adjust path to match your logo
 
 export default function Header({ onToggleSidebar }) {
+	const { user } = useAuth();
 	const navigate = useNavigate();
-	const username = localStorage.getItem('username');
-	const userData = JSON.parse(localStorage.getItem('data') || '{}');
-	const role = localStorage.getItem('role');
-
-	function handleProfileClick() {
-		if (role === 'STUDENT') {
-			navigate('/student/profile');
-		} else if (role === 'FACULTY') {
-			navigate('/faculty/profile');
-		} else if (role === 'DEPARTMENT-HEAD') {
-			navigate('/hod/profile');
-		}
-	}
 
 	return (
-		<header className="flex items-center justify-between px-3 py-3 bg-white shadow-md z-50 w-full">
-			<div className="flex items-center gap-2 min-w-0">
+		<header className="fixed top-0 left-0 right-0 z-40 w-full h-20 m-0 bg-gradient-to-r from-blue-100 via-white to-gray-100 border-b border-gray-200 flex justify-between items-center px-4 md:px-6 shadow-sm">
+			{/* Left: Brand and Menu Toggle */}
+			<div className="flex items-center gap-4">
 				<Button
-					icon="pi pi-bars"
-					className="p-button-text md:hidden my-auto"
+					icon={<Menu size={24} />}
+					className="md:hidden p-button-text p-button-rounded text-[#336699] hover:bg-[#336699] hover:text-white transition duration-200"
 					onClick={onToggleSidebar}
-					aria-label="Toggle Menu"
+					aria-label="Toggle sidebar"
 				/>
-				{/* <Avatar image={logo} size="xlarge" shape="circle" className="w-12 h-12 my-auto" /> */}
-				<h1 className="text-2xl sm:text-3xl font-bold text-sky-800 truncate my-auto">
-					SkillScript
-				</h1>
+				<div className="flex items-center gap-2">
+					<img
+						src={logo}
+						alt="BlueRoots Logo"
+						className="w-10 h-10 rounded-full object-contain"
+					/>
+					<h1 className="text-3xl font-extrabold text-[#336699] tracking-wide">
+						Blue<span className="text-gray-800">Roots</span>
+					</h1>
+				</div>
 			</div>
 
+			{/* Right: User Info */}
 			<div
-				className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:ring-1 hover:ring-primary-hover focus:outline-none focus:ring-2 focus:ring-primary rounded-full p-1 sm:p-2 transition-all"
-				onClick={handleProfileClick}
+				className="flex items-center gap-3 bg-white/80 border border-gray-300 px-4 py-2 rounded-full cursor-pointer shadow-sm hover:shadow-md hover:bg-white transition-all duration-200"
+				onClick={() => navigate('/profile')}
 			>
-				<span className="hidden sm:inline text-xl font-semibold text-primary truncate max-w-[100px] sm:max-w-xs">
-					{username || 'Guest'}
+				<Avatar icon="pi pi-user" shape="circle" className="bg-blue-100 text-[#336699]" />
+				<span className="hidden sm:inline text-sm font-medium text-[#336699]">
+					{user ? user.name || user.email : 'Guest'}
 				</span>
-				{/* <Avatar
-					shape="circle"
-					className="text-primary bg-gray-200 w-10 h-10"
-					icon={
-						role === 'STUDENT' && !userData?.profile?.url
-							? 'pi pi-user text-xl'
-							: 'pi pi-user text-xl'
-					}
-					image={
-						role === 'STUDENT' && userData?.profile?.url
-							? `${userData.profile.url}` // backend URL + stored path
-							: undefined
-					}
-				/> */}
 			</div>
 		</header>
 	);

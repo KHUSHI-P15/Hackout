@@ -5,7 +5,7 @@ import ErrorElement from './components/ErrorElement';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Registration';
 import ForgotPassword from './pages/auth/ForgetPassword';
-
+import CitizenDashboard from './pages/citizens/Dashboard';
 const routes = createBrowserRouter([
 	{
 		path: '/',
@@ -28,12 +28,26 @@ const routes = createBrowserRouter([
 		element: <ForgotPassword />,
 	},
 	// Admin routes
+	// {
+	// 	path: '/admin',
+	// 	loader: verifyLoader('admin'),
+	// 	errorElement: <ErrorElement />,
+	// 	children: [
+	// 		// { path: 'dashboard', element: <AdminDashboard /> },
+	// 		// { path: 'institute', element: <InstituteList /> },
+	// 		// { path: 'institute/:id/departments', element: <AdminDepartment /> },
+	// 		// {
+	// 		// 	path: 'institute/:instituteId/department/:departmentId',
+	// 		// 	element: <FacultyAndStudentList />,
+	// 		// },
+	// 	],
+	// },
 	{
-		path: '/admin',
-		loader: verifyLoader('admin'),
+		path: '/citizen',
+		// loader: verifyLoader('citizen'),
 		errorElement: <ErrorElement />,
 		children: [
-			// { path: 'dashboard', element: <AdminDashboard /> },
+			{ path: 'dashboard', element: <CitizenDashboard /> },
 			// { path: 'institute', element: <InstituteList /> },
 			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
 			// {
