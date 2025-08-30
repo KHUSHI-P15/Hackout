@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
@@ -7,37 +7,31 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { CircleCheckBig, CircleX } from 'lucide-react';
 import PageLayout from '../../components/layout/PageLayout';
+import { fetchGet, fetchPost } from '../../utils/fetch.utils'; // Import fetch utilities
 
 export default function NGOReportsPage() {
-	const [reports] = useState([
-		{
-			_id: '1',
-			title: 'Illegal Tree Cutting',
-			description: 'Several trees were cut down illegally near the park.',
-			category: 'cutting',
-			status: 'pending',
-			aiVerified: true,
-			severity: 'low',
-			location: { address: 'Park Road, Green City' },
-			media: ['https://via.placeholder.com/150'],
-		},
-		{
-			_id: '2',
-			title: 'River Pollution',
-			description: 'Toxic waste being dumped into the river.',
-			category: 'pollution',
-			status: 'verified',
-			aiVerified: false,
-			severity: 'medium',
-			location: { address: 'Riverfront, Blue Town' },
-			media: ['https://via.placeholder.com/140'],
-		},
-	]);
-
+	const [reports, setReports] = useState([]);
 	const [selectedReport, setSelectedReport] = useState(null);
 	const [visible, setVisible] = useState(false);
 	const [severity, setSeverity] = useState(null);
 	const toast = useRef(null);
+
+	// Fetch reports on component mount
+	useEffect(() => {
+		const loadReports = async () => {
+			const response = await fetchGet({ pathName: 'ngo' });
+			if (response.success === false) {
+				toast.current.show({
+					severity: 'error',
+					summary: 'Error',
+					detail: response.message || 'Failed to fetch reports',
+				});
+				return;
+			}
+			setReports(response);
+		};
+		loadReports();
+	}, []);
 
 	const actionBodyTemplate = (rowData) => (
 		<Button
@@ -59,12 +53,36 @@ export default function NGOReportsPage() {
 			<CircleX size={20} color="#dc3545" strokeWidth={2.5} />
 		);
 
-	const sendToGovt = () => {
+	const sendToGovt = async () => {
+		const response = await fetchPost({
+			pathName: 'ngo/send-to-government',
+			body: JSON.stringify({
+				reportId: selectedReport._id,
+				severity,
+			}),
+		});
+
+		if (response.success === false) {
+			toast.current.show({
+				severity: 'error',
+				summary: 'Error',
+				detail: response.message || 'Failed to send report to government',
+			});
+			return;
+		}
+
 		toast.current.show({
 			severity: 'success',
 			summary: 'Success',
-			detail: `Report "${selectedReport.title}" sent to Govt with severity "${severity}"`,
+			detail:
+				response.message ||
+				`Report "${selectedReport.title}" sent to Govt with severity "${severity}"`,
 		});
+
+		// Remove the verified report from the local state
+		setReports((prevReports) =>
+			prevReports.filter((report) => report._id !== selectedReport._id)
+		);
 		setVisible(false);
 	};
 
@@ -72,9 +90,7 @@ export default function NGOReportsPage() {
 		<PageLayout>
 			<div className="p-6">
 				<Toast ref={toast} />
-				<h2 className="text-4xl font-semibold mb-4 text-[#336699]" >
-					Citizen Reports
-				</h2>
+				<h2 className="text-4xl font-semibold mb-4 text-[#336699]">Citizen Reports</h2>
 
 				<DataTable
 					value={reports}
@@ -121,7 +137,6 @@ export default function NGOReportsPage() {
 					/>
 				</DataTable>
 
-				{/* Modal */}
 				<Dialog
 					header={<span style={{ color: '#336699' }}>Report Details</span>}
 					visible={visible}
@@ -145,7 +160,6 @@ export default function NGOReportsPage() {
 							<p>
 								<b>Location:</b> {selectedReport.location?.address}
 							</p>
-
 							<div>
 								<b>Select Severity:</b>
 								<Dropdown
@@ -160,7 +174,6 @@ export default function NGOReportsPage() {
 									className="w-full mt-2"
 								/>
 							</div>
-
 							<div className="flex justify-end mt-4">
 								<Button
 									label="Send to Govt"

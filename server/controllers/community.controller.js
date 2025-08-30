@@ -1,5 +1,5 @@
-const Community = require('../models/community.model'); // Corrected path
-const { upload } = require('../utils/multer.utils'); // Corrected path
+const Community = require('../models/community.model'); 
+const { upload } = require('../utils/multer.utils'); 
 const path = require('path');
 exports.createPost = [
 	upload.array('media', 5),
@@ -12,22 +12,22 @@ exports.createPost = [
 			});
 			const { title, content } = req.body;
 			const createdBy = res.locals.user?.userId;
-			// Validate user
+
 			if (!createdBy) {
 				console.error('createPost: No user found in res.locals.user');
 				return res.status(401).json({ success: false, message: 'User not authenticated' });
 			}
-			// Validate required fields
+
 			if (!title || !content) {
 				console.error('createPost: Missing title or content', { title, content });
 				return res
 					.status(400)
 					.json({ success: false, message: 'Title and content are required' });
 			}
-			// Process uploaded files
-			const media = req.files ? req.files.map((file) => `/uploads/${file.filename}`) : [];
+
+			const media = req.files ? req.files.map((file) => `/posts/${file.filename}`) : [];
 			console.log('createPost: Media files', media);
-			// Create new post
+
 			const post = new Community({
 				title,
 				content,
@@ -36,7 +36,7 @@ exports.createPost = [
 			});
 			await post.save();
 			console.log('createPost: Post saved', post._id);
-			// Populate createdBy field
+
 			const populatedPost = await Community.findById(post._id)
 				.populate('createdBy', 'name')
 				.exec();

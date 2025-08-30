@@ -9,7 +9,7 @@ const ReportSchema = new mongoose.Schema(
 			enum: ['cutting', 'dumping', 'encroachment', 'pollution', 'other'],
 			required: true,
 		},
-		createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+		createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: false },
 		location: {
 			lat: Number,
 			lng: Number,
@@ -19,7 +19,7 @@ const ReportSchema = new mongoose.Schema(
 		aiVerified: { type: Boolean, default: true },
 		status: {
 			type: String,
-			enum: ['pending', 'verified', 'in-progress', 'resolved'],
+			enum: ['pending', 'verified', 'resolved'],
 			default: 'pending',
 		},
 		severity: {
@@ -27,8 +27,8 @@ const ReportSchema = new mongoose.Schema(
 			enum: ['low', 'medium', 'high'],
 			default: 'low', // optional: you can remove default if you want it mandatory
 		},
-		verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // NGO role
-		resolvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Gov role or NGO
+		verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }, // NGO role
+		resolvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }, // Gov role or NGO
 		govReplies: [
 			{
 				text: String,
