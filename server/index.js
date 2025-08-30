@@ -15,6 +15,7 @@ const { errorHandler, asyncRouteHandler } = require('./utils/route.utils');
 const authRoutes = require('./routes/auth.route');
 const citizensRoutes = require('./routes/citizens.route');
 const communityRoutes = require('./routes/community.route');
+const ngoRoutes = require('./routes/ngo.route');
 // const facultyRoutes = require('./routes/faculty.route');
 // const studentRoutes = require('./routes/student.route');
 // const subjectRoutes = require('./routes/subject.route');
@@ -47,6 +48,7 @@ app.use(
 app.use('/auth', authRoutes);
 app.use('/citizen', citizensRoutes);
 app.use('/community', communityRoutes);
+app.use('/ngo', ngoRoutes);
 // app.use('/faculty', facultyRoutes);
 // app.use('/student', studentRoutes);
 // app.use('/subject', subjectRoutes);

@@ -16,7 +16,7 @@ const ReportSchema = new mongoose.Schema(
 			address: String,
 		},
 		media: [{ type: String }], // photo
-		aiVerified: { type: Boolean, default: true },
+		aiVerified: { type: Boolean, default: false },
 		status: {
 			type: String,
 			enum: ['pending', 'verified', 'in-progress', 'resolved'],

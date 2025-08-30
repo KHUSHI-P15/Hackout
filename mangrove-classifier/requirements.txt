@@ -1,0 +1,11 @@
+tensorflow
+torch
+torchvision
+numpy
+matplotlib
+scikit-learn
+pillow
+jupyter
+flask
+flask-cors
+requests

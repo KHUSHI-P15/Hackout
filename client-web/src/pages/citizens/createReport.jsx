@@ -375,15 +375,9 @@ export default function AddReport() {
 
 	return (
 		<PageLayout>
-			{/* <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-cyan-50 p-2 sm:p-4"> */}
-			<div className="max-w-4xl mx-auto  mt-0  ">
+			<div className="p-6">
+				<h2 className="text-4xl font-semibold mb-2 text-[#336699]">Report an Incident</h2>
 				<Card
-					title={
-						<div className="flex items-center gap-3 text-xl sm:text-2xl font-bold text-green-700">
-							<i className="pi pi-megaphone text-2xl sm:text-3xl"></i>
-							<span>Report an Incident</span>
-						</div>
-					}
 					className="shadow-lg border-0 border-round-3xl overflow-hidden"
 					style={{
 						background: 'linear-gradient(135deg, #ffffff, #f8fafc)',
@@ -408,7 +402,7 @@ export default function AddReport() {
 						<div className="grid formgrid gap-4">
 							{/* Title */}
 							<div className="col-12">
-								<label className="block font-semibold text-green-700 mb-2 text-sm sm:text-base">
+								<label className="block font-semibold text-[#336699] mb-2 text-sm sm:text-base">
 									Title <span className="text-red-500">*</span>
 								</label>
 								<InputText
@@ -424,7 +418,7 @@ export default function AddReport() {
 
 							{/* Description */}
 							<div className="col-12">
-								<label className="block font-semibold text-green-700 mb-2 text-sm sm:text-base">
+								<label className="block font-semibold text-[#336699] mb-2 text-sm sm:text-base">
 									Description
 								</label>
 								<InputTextarea
@@ -441,7 +435,7 @@ export default function AddReport() {
 							{/* Category and Address Row */}
 							<div className="col-12 grid grid-nogutter gap-4">
 								<div className="col-12 sm:col-6">
-									<label className="block font-semibold text-green-700 mb-2 text-sm sm:text-base">
+									<label className="block font-semibold text-[#336699] mb-2 text-sm sm:text-base">
 										Category <span className="text-red-500">*</span>
 									</label>
 									<Dropdown
@@ -456,7 +450,7 @@ export default function AddReport() {
 								</div>
 
 								<div className="col-12 sm:col-6">
-									<label className="block font-semibold text-green-700 mb-2 text-sm sm:text-base">
+									<label className="block font-semibold text-[#336699] mb-2 text-sm sm:text-base">
 										Address / Landmark
 									</label>
 									<InputText
@@ -471,7 +465,7 @@ export default function AddReport() {
 
 							{/* Location Selection */}
 							<div className="col-12">
-								<label className="block font-semibold text-green-700 mb-2 text-sm sm:text-base">
+								<label className="block font-semibold text-[#336699] mb-2 text-sm sm:text-base">
 									Location <span className="text-red-500">*</span>
 								</label>
 								<div className="grid grid-nogutter gap-3">
@@ -540,7 +534,7 @@ export default function AddReport() {
 
 							{/* File Upload */}
 							<div className="col-12">
-								<label className="block font-semibold text-green-700 mb-2 text-sm sm:text-base">
+								<label className="block font-semibold text-[#336699] mb-2 text-sm sm:text-base">
 									Upload Photos (Optional)
 								</label>
 								<div className="border-2 border-dashed border-gray-300 border-round-xl p-4 text-center hover:border-green-400 transition-colors">
@@ -593,15 +587,17 @@ export default function AddReport() {
 							{/* Submit Button */}
 							<div className="col-12 mt-4">
 								<Button
-									label={loading ? 'Submitting...' : '🚀 Submit Report'}
-									icon={loading ? 'pi pi-spin pi-spinner' : 'pi pi-check'}
-									className="w-full p-button-lg p-button-success border-round-xl font-semibold text-base sm:text-lg"
+									label={loading ? 'Submitting...' : 'Submit Report'}
+									icon={loading ? 'pi pi-spin pi-spinner' : 'pi pi-send'}
+									className="w-full p-button-lg font-semibold text-base sm:text-lg"
 									onClick={handleSubmit}
 									disabled={loading}
 									style={{
-										background: 'linear-gradient(135deg, #059669, #10b981)',
+										backgroundColor: '#336699',
 										border: 'none',
+										color: 'white',
 										padding: '1rem 2rem',
+										borderRadius: '12px',
 									}}
 								/>
 							</div>
@@ -609,7 +605,6 @@ export default function AddReport() {
 					</div>
 				</Card>
 			</div>
-			{/* </div> */}
 		</PageLayout>
 	);
 }
