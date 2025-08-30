@@ -11,6 +11,12 @@ import NGOReportsPage from './pages/ngo/VerifyReports';
 import NGODashboard from './pages/ngo/Dashboard';
 import CommunityPage from './pages/ngo/Community';
 import History from './pages/citizens/History';
+import HomePage from './pages/HomePage';
+import ResolveReport from './pages/government/ResolveReport';
+import Dashboard from './pages/government/Dashboard';
+import DataInsights from './pages/government/DataInsights';
+
+
 const routes = createBrowserRouter([
 	{
 		path: '/',
@@ -31,6 +37,10 @@ const routes = createBrowserRouter([
 		path: '/forgot-password',
 		// loader: loginLoader,
 		element: <ForgotPassword />,
+	},
+	{
+		path: '/home',
+		element: <HomePage />,
 	},
 	// Admin routes
 	// {
@@ -75,6 +85,16 @@ const routes = createBrowserRouter([
 			// 	path: 'institute/:instituteId/department/:departmentId',
 			// 	element: <FacultyAndStudentList />,
 			// },
+		],
+	},
+	{
+		path: '/government',
+		// loader: verifyLoader('citizen'),
+		errorElement: <ErrorElement />,
+		children: [
+			{ path: 'dashboard', element: <Dashboard /> },
+			{ path: 'resolve-reports', element: <ResolveReport /> },
+			{ path: 'data-insights', element: <DataInsights /> },
 		],
 	},
 	// Catch all
