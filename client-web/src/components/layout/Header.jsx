@@ -5,6 +5,7 @@ import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import { Menu } from 'lucide-react';
 import logo from '../../assets/image.png'; // Adjust path to match your logo
+import GoogleTranslate from '../multilingual/GoogleTranslate';
 
 export default function Header({ onToggleSidebar }) {
 	const { user } = useAuth();
@@ -33,14 +34,22 @@ export default function Header({ onToggleSidebar }) {
 			</div>
 
 			{/* Right: User Info */}
-			<div
-				className="flex items-center gap-3 bg-white/80 border border-gray-300 px-4 py-2 rounded-full cursor-pointer shadow-sm hover:shadow-md hover:bg-white transition-all duration-200"
-				onClick={() => navigate('/profile')}
-			>
-				<Avatar icon="pi pi-user" shape="circle" className="bg-blue-100 text-[#336699]" />
-				<span className="hidden sm:inline text-sm font-medium text-[#336699]">
-					{user ? user.name || user.email : 'Guest'}
-				</span>
+			{/* Right: Translate + User Info */}
+			<div className="flex items-center gap-3">
+				<GoogleTranslate />
+				<div
+					className="flex items-center gap-3 bg-white/80 border border-gray-300 px-4 py-2 rounded-full cursor-pointer shadow-sm hover:shadow-md hover:bg-white transition-all duration-200"
+					onClick={() => navigate('/profile')}
+				>
+					<Avatar
+						icon="pi pi-user"
+						shape="circle"
+						className="bg-blue-100 text-[#336699]"
+					/>
+					<span className="hidden sm:inline text-sm font-medium text-[#336699]">
+						{user ? user.name || user.email : 'Guest'}
+					</span>
+				</div>
 			</div>
 		</header>
 	);
