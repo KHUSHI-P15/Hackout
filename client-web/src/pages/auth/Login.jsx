@@ -148,7 +148,7 @@ const Login = () => {
 						<Button
 							label={
 								<span className="flex items-center gap-2">
-									<span>Not registered? Sign Up</span>
+									<span> Sign Up</span>
 								</span>
 							}
 							onClick={handleRegister}

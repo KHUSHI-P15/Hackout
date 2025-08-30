@@ -68,11 +68,11 @@ export default function AddReport() {
 	}, []);
 
 	const categories = [
-		{ label: '🌳 Cutting', value: 'cutting' },
-		{ label: '🗑️ Dumping', value: 'dumping' },
-		{ label: '🏠 Encroachment', value: 'encroachment' },
-		{ label: '💨 Pollution', value: 'pollution' },
-		{ label: '❓ Other', value: 'other' },
+		{ label: ' Cutting', value: 'cutting' },
+		{ label: ' Dumping', value: 'dumping' },
+		{ label: ' Encroachment', value: 'encroachment' },
+		{ label: ' Pollution', value: 'pollution' },
+		{ label: ' Other', value: 'other' },
 	];
 
 	const handleChange = (key, value) => {
@@ -376,7 +376,9 @@ export default function AddReport() {
 	return (
 		<PageLayout>
 			<div className="p-6">
-				<h2 className="text-4xl font-semibold mb-2 text-[#336699]">Report an Incident</h2>
+				<h2 className="text-4xl font-semibold mb-2 text-[#336699] mt-20">
+					Report an Incident
+				</h2>
 				<Card
 					className="shadow-lg border-0 border-round-3xl overflow-hidden"
 					style={{
@@ -443,7 +445,7 @@ export default function AddReport() {
 										options={categories}
 										onChange={(e) => handleChange('category', e.value)}
 										placeholder="Select category"
-										className={`w-full ${errors.category ? 'p-invalid' : ''}`}
+										className={`w-full ${errors.category ? 'p-invalid' : ''} `}
 										style={{ borderRadius: '12px' }}
 										panelStyle={{ borderRadius: '12px' }}
 									/>

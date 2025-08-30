@@ -77,7 +77,9 @@ export default function CitizenReportsPage() {
 	return (
 		<PageLayout>
 			<div className="p-6">
-				<h2 className="text-4xl font-semibold mb-4 text-[#336699]">My Report History</h2>
+				<h2 className="text-4xl font-semibold mb-4 text-[#336699] mt-20">
+					My Report History
+				</h2>
 
 				<DataTable
 					value={reports}
@@ -85,6 +87,7 @@ export default function CitizenReportsPage() {
 					rows={5}
 					dataKey="_id"
 					className="overflow-hidden shadow"
+					responsiveLayout="scroll"
 				>
 					<Column
 						field="title"
