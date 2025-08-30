@@ -1,49 +1,56 @@
 const jwt = require('jsonwebtoken');
-const facultyModel = require('../models/faculty.model');
-const studentModel = require('../models/student.model');
-const userModel = require('../models/user.model');
+const User = require('../models/user.model'); // Adjust path to your User model
 
-function authMiddleware(role) {
+function authMiddleware(roles = []) {
 	return async (req, res, next) => {
+		// Check for Authorization header
 		const authHeader = req.headers.authorization;
-
-		if (!authHeader) {
-			return res.status(401).json({ error: 'Authorization token missing or malformed' });
+		if (!authHeader || !authHeader.startsWith('Bearer ')) {
+			return res.status(401).json({
+				success: false,
+				message: 'Authorization token missing or malformed',
+			});
 		}
 
+		// Extract token
 		const token = authHeader.split(' ')[1];
-		let user = null;
+
 		try {
-			user = jwt.verify(token, process.env.JWT_SECRET);
+			// Verify JWT token
+			const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
 
-			if (!user || !user._id) {
-				return res.status(401).json({ error: 'Invalid or expired token' });
+			// Find user by ID and ensure they are active
+			const user = await User.findOne({ _id: decoded.userId, isActive: true });
+			if (!user) {
+				return res.status(401).json({
+					success: false,
+					message: 'Invalid or inactive user',
+				});
 			}
-			const userEntry = await userModel.findById(user._id);
-			if (!userEntry || userEntry.currentToken !== token) {
-				return res.status(401).json({ message: 'Invalid session' });
+
+			// Check if user has one of the required roles (if roles are specified)
+			if (roles.length > 0 && !roles.includes(user.role)) {
+				return res.status(403).json({
+					success: false,
+					message: 'Forbidden: insufficient privileges',
+				});
 			}
 
-			// console.log("\x1b[36m[AUTH]\x1b[0m Decoded JWT:");
-			// console.log(`  📧 Email: ${decoded.email}`);
-			// console.log(`  🎭 Role : ${decoded.role}`);
-
-			// if (role && user.role !== role) {
-			// 	return res.status(403).json({ error: 'Forbidden: insufficient privileges' });
-			// }
-			let data;
-			if (role == 'STUDENT') {
-				data = await studentModel.findOne({ userId: user._id });
-			} else {
-				data = await facultyModel.findOne({ userId: user._id });
-			}
-			res.locals.data = data;
-
-			res.locals.user = user;
+			// Store user data in res.locals for downstream use
+			res.locals.user = {
+				userId: user._id,
+				email: user.email,
+				role: user.role,
+				name: user.name,
+			};
 
 			next();
 		} catch (err) {
-			return res.status(401).json({ error: 'Invalid or expired token' });
+			console.error('Auth middleware error:', err);
+			return res.status(401).json({
+				success: false,
+				message: 'Invalid or expired token',
+			});
 		}
 	};
 }
