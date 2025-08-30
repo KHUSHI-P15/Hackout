@@ -43,6 +43,9 @@ app.use('/ngo', express.json({ limit: '10mb' }), ngoRoutes);
 // ✅ Do NOT attach express.json here (multipart handled by Multer)
 app.use('/government', govtRoutes);
 
+app.get(/.*/, (req, res) => {
+	res.sendFile(path.join(__dirname, 'client-web/dist', 'index.html'));
+});
 app.use(errorHandler);
 
 dbConnect()
