@@ -56,12 +56,6 @@ Advanced analytics dashboard for project insights and reports.
 
 Mobile application for improved citizen accessibility.
 
-👥 Team
-
-Jaykishan (Jackey)
-
-[Your teammates’ names here]
-
 📜 License
 
 This project is developed for academic and research purposes.
