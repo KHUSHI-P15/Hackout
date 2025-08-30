@@ -15,7 +15,7 @@ export default function PageLayout({ children }) {
 				<Header onToggleSidebar={toggleSidebar} />
 			</div>
 
-			<div className="flex flex-1 pt-20">
+			<div className="flex flex-1">
 				{/* Mobile backdrop */}
 				{sidebarVisible && (
 					<div
@@ -23,15 +23,12 @@ export default function PageLayout({ children }) {
 						onClick={closeSidebar}
 					/>
 				)}
-
 			</div>
-				{/* Sidebar */}
-				<Sidebar isVisible={sidebarVisible} onClose={closeSidebar} />
+			{/* Sidebar */}
+			<Sidebar isVisible={sidebarVisible} onClose={closeSidebar} />
 
-				{/* Main content */}
-				<div className="ml-60 pt-24 px-4 md:px-10 pb-6 min-h-screen">
-					{children}
-				</div>
+			{/* Main content */}
+			<div className="ml-60 pt-24 px-4 md:px-10 pb-6 min-h-screen">{children}</div>
 		</div>
 	);
 }

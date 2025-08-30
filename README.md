@@ -1,67 +1,62 @@
-Project Monitoring and Grievance Management System
-📌 Overview
+🌱 BlueRoot - Community Mangrove Watch
 
-This project is a web-based application designed to streamline the monitoring of S&T and R&D projects in the coal sector while also providing a grievance redressal system for citizens. It ensures structured data management, transparency, and accountability by connecting administrators, project investigators, auditors, and citizens on a single platform.
+🛑 Problem Statement: Mangroves play a vital role in coastal ecosystems by preventing erosion,
+supporting biodiversity, and acting as natural buffers against storms. However, monitoring mangrove
+health is challenging, especially in remote areas. Coastal communities, NGOs, and government bodies
+often lack a unified platform to report, verify, and act upon environmental changes affecting
+mangroves.
 
-🚀 Key Features
+🌊 HackOut Challenge: Develop a community-driven platform that connects citizens, NGOs, and
+government authorities to monitor, protect, and restore mangroves effectively using AI and
+technology.
 
-Project Monitoring – Track project progress, financial updates, and documentation in real time.
+💡 Our Solution **BlueRoot** is a web and PWA(Progressive Web Application) platform that empowers
+coastal communities to report mangrove issues, NGOs to validate reports, and government authorities
+to take action. AI-driven validation ensures authenticity, while citizen contributions are rewarded.
+Researchers also gain insights for future predictions and studies.
 
-Grievance Management – Citizens can raise grievances directly, with transparent status updates.
+✨ Key Features:
 
-Role-Based Access – Separate portals for Admin (CMPDI), Project Investigators (PIs), and Auditors.
+-   🌐 Multilingual support for local community users.
+-   🤖 AI-powered report validation.
+-   ✅ NGO verification and government action workflow.
+-   🏅 Citizen recognition system through points for verified contributions.
+-   📊 Data sharing with researchers for predictive analysis.
 
-Notifications & Alerts – Project-specific and grievance-specific updates.
+🏃‍♂️ Project Flow:
 
-Document Management – Upload and verify reports, forms, and supporting documents.
+1. **📝 Citizen Uploads Report:** Coastal community members upload photos, videos, or textual
+   reports of mangrove conditions.
+2. **🤖 AI Validation:** The platform automatically validates the report using AI to ensure
+   authenticity.
+3. **✅ NGO Verification:** Verified NGOs cross-check the report for accuracy and provide additional
+   insights.
+4. **🏛️ Government Action:** Validated reports are forwarded to government authorities for action
+   and response is forwarded to citizens.
+5. **🔬 Problem Resolution & Research:** Resolved issues are marked, and the data is shared with
+   researchers for future predictions.
+6. **🎖️ Citizen Rewards:** Users whose reports are verified earn points and recognition,
+   incentivizing accurate contributions.
 
-🛠️ Tech Stack
+📊 Screenshots / Prototype: **🏠 Home Page / Dashboard**  
+![Dashboard](./screenshots/dashboard.png)
 
-Frontend: React.js (with Tailwind CSS)
+**📤 Report Upload / Citizen Portal**  
+![Upload Report](./screenshots/upload_report.png)
 
-Backend: Node.js / Express.js
+**🌐 Community Feed**  
+![Community Feed](./screenshots/community_feed.png)
 
-Database: MongoDB
+**📝 Admin / NGO Verification**  
+![NGO Verification](./screenshots/ngo_verification.png)
 
-Hosting: Azure / AWS (cloud-ready deployment)
+🛠️ Technology Stack **💻 Frontend:** React, Vite, PrimeReact, TailwindCSS  
+**🖥️ Backend:** Node.js, Express.js  
+**🗄️ Database:** MongoDB  
+**🔐 Authentication:** JWT  
+**📂 File Upload & Storage:** Multer, Local storage  
+**🤖 AI Validation:** Python/ML module  
+**🗺️ Maps & Geolocation:** Google Maps API  
+**🚀 Deployment:** Node server + Vite PWA
 
-📂 Roles
-
-CMPDI Admin – Creates and manages projects, assigns investigators, oversees grievances.
-
-Project Investigator (PI) – Inputs updates, submits reports, uploads documents.
-
-Auditor – Reviews submitted data, verifies compliance, flags issues.
-
-Citizen – Submits grievances with supporting details for resolution.
-
-🔑 Core Values
-⚡ Scalability
-
-Designed to handle large datasets and multiple concurrent users efficiently, with API integration support.
-
-🌱 Sustainability
-
-Built with a modular setup, allowing easy updates, future enhancements, and AI/ML integration for long-term relevance.
-
-💡 Value Creation
-
-Provides citizens with a transparent platform to raise grievances in real time, while enabling administrators and auditors to manage project data, resources, and operations efficiently for better decision-making.
-
-📊 Future Enhancements
-
-AI-based grievance classification for faster redirection to the correct department.
-
-Advanced analytics dashboard for project insights and reports.
-
-Mobile application for improved citizen accessibility.
-
-👥 Team
-
-Jaykishan (Jackey)
-
-[Your teammates’ names here]
-
-📜 License
-
-This project is developed for academic and research purposes.
+🚀 Repo Link: **Clone the repository** git clone https://github.com/KHUSHI-P15/Hackout.git
