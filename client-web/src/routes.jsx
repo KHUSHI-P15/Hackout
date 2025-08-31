@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { loginLoader, verifyLoader } from './loaders/verify.loader';
+// import { loginLoader, verifyLoader } from './loaders/verify.loader';
 import ErrorElement from './components/ErrorElement';
 // import Home from './pages/Home';
 import Login from './pages/auth/Login';
@@ -15,6 +15,7 @@ import HomePage from './pages/HomePage';
 import ResolveReport from './pages/government/ResolveReport';
 import Dashboard from './pages/government/Dashboard';
 import DataInsights from './pages/government/DataInsights';
+import Leaderboard from './pages/Leaderboard';
 
 
 const routes = createBrowserRouter([
@@ -41,6 +42,14 @@ const routes = createBrowserRouter([
 	{
 		path: '/home',
 		element: <HomePage />,
+	},
+	{
+		path: '/leaderboard',
+		element: <Leaderboard />,
+	},
+		{
+		path: '/community',
+		element: <CommunityPage />,
 	},
 	// Admin routes
 	// {
@@ -79,7 +88,7 @@ const routes = createBrowserRouter([
 		children: [
 			{ path: 'dashboard', element: <NGODashboard /> },
 			{ path: 'verify-reports', element: <NGOReportsPage /> },
-			{ path: 'community', element: <CommunityPage /> },
+			// { path: 'community', element: <CommunityPage /> },
 			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
 			// {
 			// 	path: 'institute/:instituteId/department/:departmentId',

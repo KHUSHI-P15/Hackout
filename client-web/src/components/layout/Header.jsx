@@ -39,7 +39,7 @@ export default function Header({ onToggleSidebar }) {
 				<GoogleTranslate />
 				<div
 					className="flex items-center gap-3 bg-white/80 border border-gray-300 px-4 py-2 rounded-full cursor-pointer shadow-sm hover:shadow-md hover:bg-white transition-all duration-200"
-					onClick={() => navigate('/profile')}
+					onClick={() => navigate('#')}
 				>
 					<Avatar
 						icon="pi pi-user"

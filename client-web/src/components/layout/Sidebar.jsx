@@ -46,14 +46,14 @@ export default function Sidebar({ isVisible, onClose }) {
 			{ name: 'Dashboard', route: '/citizen/dashboard', icon: 'LayoutDashboard' },
 			{ name: 'Add Report', route: '/citizen/add-report', icon: 'PlusCircle' },
 			{ name: 'History', route: '/citizen/history', icon: 'History' },
-			{ name: 'Leaderboard', route: '/citizen/leaderboard', icon: 'Trophy' },
-			{ name: 'Community', route: '/citizen/community', icon: 'Users' },
+			{ name: 'Leaderboard', route: '/leaderboard', icon: 'Trophy' },
+			{ name: 'Announcements', route: '/community', icon: 'Users' },
 		],
 		ngo: [
 			{ name: 'Dashboard', route: '/ngo/dashboard', icon: 'LayoutDashboard' },
 			{ name: 'Verify Reports', route: '/ngo/verify-reports', icon: 'CheckCheck' },
-			{ name: 'Community', route: '/ngo/community', icon: 'PenSquare' },
-			{ name: 'Leaderboard', route: '/ngo/leaderboard', icon: 'Trophy' },
+			{ name: 'Announcements', route: '/community', icon: 'PenSquare' },
+			{ name: 'Leaderboard', route: '/leaderboard', icon: 'Trophy' },
 		],
 		government: [
 			{ name: 'Dashboard', route: '/government/dashboard', icon: 'LayoutDashboard' },
@@ -64,11 +64,13 @@ export default function Sidebar({ isVisible, onClose }) {
 			},
 			{ name: 'Resolve Reports', route: '/government/resolve-reports', icon: 'CheckSquare' },
 			{ name: 'Data Insights', route: '/government/data-insights', icon: 'BarChart2' },
+			{ name: 'Announcements', route: '/community', icon: 'PenSquare' },
 		],
 		researcher: [
 			{ name: 'Dashboard', route: '/researcher/dashboard', icon: 'LayoutDashboard' },
 			{ name: 'Add Insights', route: '/researcher/add-insights', icon: 'BookOpen' },
 			{ name: 'Data Insights', route: '/researcher/data-insights', icon: 'BarChart2' },
+			{ name: 'Announcements', route: '/community', icon: 'PenSquare' },
 		],
 	};
 

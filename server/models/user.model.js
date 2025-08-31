@@ -17,6 +17,7 @@ const UserSchema = new mongoose.Schema(
 		badges: [{ type: String }], // earned rewards
 		profileImage: { type: String }, // cloud storage link
 		isActive: { type: Boolean, default: true }, // for soft deletion and record management
+		isVerified: { type: Boolean, default: false }, // government verification status
 	},
 	{ timestamps: true }
 );
