@@ -48,9 +48,11 @@ Researchers also gain insights for future predictions and studies.
 
 **AI / ML Analytics** ![Analytics](client-web/src/assets/ai-ml-analytics.png)
 
-**Gov-Dashboard** ![dashboard](client-web/src/assets/govt_dashboard.png)
+**govt-dashboard** ![dashboard](client-web/src/assets/gov-dashboard.png)
 
 **Leaderboard** ![leaderboard](client-web/src/assets/Leaderboard.png)
+
+**Data-Insights** ![data](client-web/src/assets/data-insights.png)
 
 🛠️ Technology Stack:
 
