@@ -1,14 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PageLayout from '../../components/layout/PageLayout';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import PageLayout from '../../components/layout/PageLayout';
+import { Calendar } from 'primereact/calendar';
+import { FilterMatchMode } from 'primereact/api';
+import { Dialog } from 'primereact/dialog';
 import { fetchGet } from '../../utils/fetch.utils';
 
 export default function ResolveReport() {
 	const [reports, setReports] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [filters, setFilters] = useState({
+		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+		title: { value: null, matchMode: FilterMatchMode.CONTAINS },
+		location: { value: null, matchMode: FilterMatchMode.CONTAINS },
+		severity: { value: null, matchMode: FilterMatchMode.EQUALS },
+		escalationDate: { value: null, matchMode: FilterMatchMode.DATE_IS },
+	});
+	const [globalFilterValue, setGlobalFilterValue] = useState('');
 	const [selectedReport, setSelectedReport] = useState(null);
 	const [visible, setVisible] = useState(false);
 	const [responseText, setResponseText] = useState('');
@@ -25,26 +37,82 @@ export default function ResolveReport() {
 					summary: 'Error',
 					detail: response.message || 'Failed to fetch reports',
 				});
+				setLoading(false);
 				return;
 			}
 			setReports(response);
+			setLoading(false);
 		};
 		loadReports();
 	}, []);
 
-	const severityColor = (severity) => {
-		switch (severity.toLowerCase()) {
+	// Severity badge
+	const severityBadge = (severity) => {
+		switch (severity?.toLowerCase()) {
 			case 'high':
-				return 'bg-red-600 text-white';
+				return <span className="px-2 py-1 bg-red-600 text-white rounded">{severity}</span>;
 			case 'medium':
-				return 'bg-orange-500 text-white';
+				return (
+					<span className="px-2 py-1 bg-orange-500 text-white rounded">{severity}</span>
+				);
 			case 'low':
-				return 'bg-green-600 text-white';
+				return (
+					<span className="px-2 py-1 bg-green-600 text-white rounded">{severity}</span>
+				);
 			default:
-				return 'bg-gray-400 text-white';
+				return <span className="px-2 py-1 bg-gray-400 text-white rounded">{severity}</span>;
 		}
 	};
 
+	// Date filter template
+	const dateFilterTemplate = (options) => {
+		return (
+			<Calendar
+				value={options.value ? new Date(options.value) : null}
+				onChange={(e) => options.filterCallback(e.value, options.index)}
+				dateFormat="yy-mm-dd"
+				placeholder="Select Date"
+				className="w-full"
+			/>
+		);
+	};
+
+	// Global filter change
+	const onGlobalFilterChange = (e) => {
+		const value = e.target.value;
+		let _filters = { ...filters };
+		_filters['global'].value = value;
+		setFilters(_filters);
+		setGlobalFilterValue(value);
+	};
+
+	const clearFilters = () => {
+		setFilters({
+			global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+			title: { value: null, matchMode: FilterMatchMode.CONTAINS },
+			location: { value: null, matchMode: FilterMatchMode.CONTAINS },
+			severity: { value: null, matchMode: FilterMatchMode.EQUALS },
+			escalationDate: { value: null, matchMode: FilterMatchMode.DATE_IS },
+		});
+		setGlobalFilterValue('');
+	};
+
+	// Action button for dialog
+	const actionBodyTemplate = (rowData) => (
+		<Button
+			icon="pi pi-external-link"
+			className="p-button-rounded"
+			style={{ backgroundColor: '#336699', border: 'none' }}
+			onClick={() => {
+				setSelectedReport(rowData);
+				setResponseText('');
+				setResponseFile(null);
+				setVisible(true);
+			}}
+		/>
+	);
+
+	// Handle resolve submit
 	const handleResolveSubmit = async () => {
 		if (!responseText || responseText.trim() === '') {
 			toast.current.show({
@@ -62,24 +130,14 @@ export default function ResolveReport() {
 			formData.append('resolvedBy', govUserId);
 			formData.append('status', 'resolved');
 
-			console.log('FormData contents:');
-			for (let [key, value] of formData.entries()) {
-				console.log(`${key}:`, value);
-			}
-
-			// Direct fetch call without utility to avoid any caching issues
 			const token = localStorage.getItem('token');
 			const apiURL = import.meta.env.VITE_URL;
-			
+
 			const response = await fetch(`${apiURL}government/${selectedReport._id}/resolve`, {
 				method: 'POST',
-				headers: {
-					...(token && { Authorization: 'Bearer ' + token }),
-					// Deliberately NOT setting Content-Type to let browser handle FormData
-				},
+				headers: { ...(token && { Authorization: 'Bearer ' + token }) },
 				body: formData,
 			});
-
 			const result = await response.json();
 
 			if (result.success === false) {
@@ -96,7 +154,6 @@ export default function ResolveReport() {
 				summary: 'Success',
 				detail: `Report "${selectedReport.title}" resolved successfully`,
 			});
-
 			setReports((prev) => prev.filter((r) => r._id !== selectedReport._id));
 			setVisible(false);
 			setResponseText('');
@@ -111,81 +168,103 @@ export default function ResolveReport() {
 		}
 	};
 
-	const actionBodyTemplate = (rowData) => (
-		<Button
-			icon="pi pi-external-link"
-			className="p-button-rounded"
-			style={{ backgroundColor: '#336699', border: 'none' }}
-			onClick={() => {
-				setSelectedReport(rowData);
-				setResponseText('');
-				setResponseFile(null);
-				setVisible(true);
-			}}
-		/>
-	);
-
-	const severityTemplate = (rowData) => (
-		<span className={`px-2 py-1 rounded ${severityColor(rowData.severity)}`}>
-			{rowData.severity}
-		</span>
-	);
-
 	return (
 		<PageLayout>
-			<div className="p-6">
-				<Toast ref={toast} />
-				<h2 className="text-4xl font-semibold mb-4 text-[#336699]">
-					Resolve Verified Reports
-				</h2>
+			<Toast ref={toast} />
+			<div className="p-6 card">
+				<div className="flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center mb-5">
+					<h2 className="text-3xl font-bold text-[#336699]">Resolve Reports</h2>
+					<div className="flex gap-2 items-center w-full sm:w-auto">
+						<InputText
+							value={globalFilterValue}
+							onChange={onGlobalFilterChange}
+							placeholder="Search reports..."
+							className="w-full sm:w-72"
+						/>
+						<Button
+							icon="pi pi-filter-slash"
+							rounded
+							outlined
+							className="text-primary border border-primary"
+							onClick={clearFilters}
+							tooltip="Clear Filters"
+							tooltipOptions={{ position: 'bottom' }}
+						/>
+					</div>
+				</div>
 
 				<DataTable
 					value={reports}
+					loading={loading}
+					dataKey="_id"
+					filters={filters}
+					filterDisplay="menu"
+					globalFilterFields={[
+						'title',
+						'location.address',
+						'severity',
+						'createdBy.name',
+						'escalationDate',
+					]}
 					paginator
-					rows={5}
-					responsiveLayout="scroll"
-					className="overflow-hidden shadow"
+					rows={10}
+					rowsPerPageOptions={[5, 10, 25, 50]}
+					className="p-datatable-sm min-w-[700px] 	" // added table border
 				>
 					<Column
 						field="title"
 						header="Title"
 						sortable
-						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+						filter
+						headerClassName="bg-[#336699] text-white px-3 py-2 border border-gray-300"
+						bodyClassName="px-3 py-2 border border-gray-300"
 					/>
 					<Column
 						field="location.address"
 						header="Location"
 						sortable
-						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+						filter
+						headerClassName="bg-[#336699] text-white px-3 py-2 border border-gray-300"
+						bodyClassName="px-3 py-2 border border-gray-300"
 					/>
 					<Column
 						field="createdBy.name"
 						header="Submitted By"
 						sortable
-						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
-						body={(rowData) => rowData.createdBy?.name || 'Unknown'}
+						filter
+						body={(row) => row.createdBy?.name || 'Unknown'}
+						headerClassName="bg-[#336699] text-white px-3 py-2 border border-gray-300"
+						bodyClassName="px-3 py-2 border border-gray-300"
 					/>
 					<Column
 						field="severity"
 						header="Severity"
 						sortable
-						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
-						body={severityTemplate}
+						filter
+						body={(row) => severityBadge(row.severity)}
+						headerClassName="bg-[#336699] text-white px-3 py-2 border border-gray-300"
+						bodyClassName="px-3 py-2 border border-gray-300"
 					/>
 					<Column
 						field="escalationDate"
 						header="Escalation Date"
 						sortable
-						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+						filter
+						filterElement={dateFilterTemplate}
+						body={(row) => row.escalationDate}
+						headerClassName="bg-[#336699] text-white px-3 py-2 border border-gray-300"
+						bodyClassName="px-3 py-2 border border-gray-300"
 					/>
 					<Column
 						body={actionBodyTemplate}
 						header="Action"
 						style={{ textAlign: 'center', width: '8rem' }}
-						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
+						headerClassName="bg-[#336699] text-white px-3 py-2 border border-gray-300"
+						bodyClassName="px-3 py-2 border border-gray-300 text-center"
 					/>
 				</DataTable>
 
+				{/* Resolve Dialog */}
 				<Dialog
 					header={<span style={{ color: '#336699' }}>Resolve Report</span>}
 					visible={visible}
@@ -212,24 +291,6 @@ export default function ResolveReport() {
 							<p>
 								<b>Escalation Date:</b> {selectedReport.escalationDate}
 							</p>
-							{Array.isArray(selectedReport.media) && selectedReport.media.length > 0 && (
-								<div>
-									<b>Attachments:</b>
-									<div className="flex gap-2">
-										{selectedReport.media.map((file, idx) => (
-											<a
-												key={idx}
-												href={file}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="text-blue-500 underline text-sm"
-											>
-												Attachment {idx + 1}
-											</a>
-										))}
-									</div>
-								</div>
-							)}
 							<div>
 								<b>Response:</b>
 								<textarea
@@ -262,6 +323,17 @@ export default function ResolveReport() {
 					)}
 				</Dialog>
 			</div>
+			<style>
+				{`
+			.p-datatable .p-sortable-column .p-sortable-column-icon {
+    		color: white !important;
+			}
+
+			.p-datatable .p-column-filter-menu-button,
+			.p-datatable .p-column-filter-clear-button {
+    		color: white !important;
+			}`}
+			</style>
 		</PageLayout>
 	);
 }
