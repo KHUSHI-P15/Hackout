@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
@@ -7,45 +7,24 @@ import { Tag } from 'primereact/tag';
 import { Divider } from 'primereact/divider';
 import PageLayout from '../../components/layout/PageLayout';
 import { CircleCheckBig, CircleX } from 'lucide-react';
+import { fetchGet } from '../../utils/fetch.utils'; // 👈 your existing utils
 
 export default function CitizenReportsPage() {
+	const [reports, setReports] = useState([]);
 	const [selectedReport, setSelectedReport] = useState(null);
 
-	// Sample static data
-	const reports = [
-		{
-			_id: '1',
-			title: 'Illegal Tree Cutting',
-			description: 'Several trees are being cut down in Green Park without permission.',
-			category: 'cutting',
-			location: { address: 'Green Park, City Center' },
-			media: ['https://tse1.mm.bing.net/th/id/OIP.DoIyyTwuaXQefhWmG0OUTAHaEo'],
-			aiVerified: true,
-			status: 'in-progress',
-			severity: 'high',
-			createdAt: new Date(),
-			govReplies: [
-				{
-					text: 'We have sent officials to inspect.',
-					attachments: [],
-					repliedAt: new Date(),
-				},
-			],
-		},
-		{
-			_id: '2',
-			title: 'Plastic Dumping in Lake',
-			description: 'Plastic waste is being dumped near Blue Lake.',
-			category: 'dumping',
-			location: { address: 'Blue Lake, Sector 5' },
-			media: [],
-			aiVerified: false,
-			status: 'pending',
-			severity: 'medium',
-			createdAt: new Date(),
-			govReplies: [],
-		},
-	];
+	// Fetch reports from backend
+	useEffect(() => {
+		const loadReports = async () => {
+			const res = await fetchGet({ pathName: 'citizen/my' });
+			if (res?.success) {
+				setReports(res.data);
+			} else {
+				console.error('Failed to load reports:', res?.message);
+			}
+		};
+		loadReports();
+	}, []);
 
 	const severityTag = (rowData) => {
 		const color =
@@ -61,7 +40,6 @@ export default function CitizenReportsPage() {
 		const colors = {
 			pending: 'warn',
 			verified: 'info',
-			'in-progress': 'secondary',
 			resolved: 'success',
 		};
 		return <Tag value={rowData.status} severity={colors[rowData.status]}></Tag>;
@@ -123,7 +101,6 @@ export default function CitizenReportsPage() {
 						body={(rowData) => new Date(rowData.createdAt).toLocaleString()}
 						headerStyle={{ backgroundColor: '#336699', color: 'white' }}
 					/>
-					{/* Action column */}
 					<Column
 						header="Action"
 						body={(rowData) => (
@@ -143,7 +120,7 @@ export default function CitizenReportsPage() {
 					/>
 				</DataTable>
 
-				{/* Modal for details */}
+				{/* Modal */}
 				<Dialog
 					header={<span style={{ color: '#336699' }}>Report Details</span>}
 					visible={!!selectedReport}
@@ -180,7 +157,7 @@ export default function CitizenReportsPage() {
 								)}
 							</div>
 
-							{selectedReport.media.length > 0 && (
+							{selectedReport.media?.length > 0 && (
 								<div>
 									<b>Attached Media:</b>
 									<div className="flex gap-2 mt-2 flex-wrap">
@@ -202,7 +179,7 @@ export default function CitizenReportsPage() {
 								<h4 className="text-lg font-semibold text-[#336699] mb-2">
 									Government Replies
 								</h4>
-								{selectedReport.govReplies.length === 0 ? (
+								{selectedReport.govReplies?.length === 0 ? (
 									<p className="text-gray-500">No replies yet.</p>
 								) : (
 									selectedReport.govReplies.map((reply, idx) => (

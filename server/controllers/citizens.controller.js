@@ -166,5 +166,23 @@ async function addReport(req, res, next) {
 		res.status(500).json({ success: false, message: 'Server error: ' + err.message });
 	}
 }
-
-module.exports = { addReport };
+async function getMyReports(req, res) {
+	try {
+		const reports = await reportsModel.find({ createdBy: req.user?._id }).sort({ createdAt: -1 });
+		res.json({ success: true, data: reports });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ success: false, message: 'Error fetching reports' });
+	}
+}
+async function getReportById(req, res){
+	try {
+		const report = await reportsModel.findById(req.params.id);
+		if (!report) return res.status(404).json({ success: false, message: 'Report not found' });
+		res.json({ success: true, data: report });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ success: false, message: 'Error fetching report' });
+	}
+};
+module.exports = { addReport, getMyReports, getReportById };

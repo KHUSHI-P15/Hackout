@@ -39,5 +39,9 @@ router.get(
 		}
 	})
 );
+// Citizen fetches their own reports
+router.get('/my', reportController.getMyReports);
 
+// Get single report (detail view)
+router.get('/:id', reportController.getReportById);
 module.exports = router;
