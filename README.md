@@ -38,19 +38,23 @@ Researchers also gain insights for future predictions and studies.
 6. **🎖️ Citizen Rewards:** Users whose reports are verified earn points and recognition,
    incentivizing accurate contributions.
 
-📊 Screenshots / Prototype: **🏠 Home Page / Dashboard**  
-![Dashboard](./screenshots/dashboard.png)
+📊 Screenshots / Prototype:
 
-**📤 Report Upload / Citizen Portal**  
-![Upload Report](./screenshots/upload_report.png)
+**Report Upload / Citizen Portal**  
+![Upload Report](client-web/src/assets/report-upload.png)
 
-**🌐 Community Feed**  
-![Community Feed](./screenshots/community_feed.png)
+**Admin / NGO Verification**  
+![NGO Verification](client-web/src/assets/ngo-report-verification.png)
 
-**📝 Admin / NGO Verification**  
-![NGO Verification](./screenshots/ngo_verification.png)
+**AI / ML Analytics** ![Analytics](client-web/src/assets/ai-ml-analytics.png)
 
-🛠️ Technology Stack **💻 Frontend:** React, Vite, PrimeReact, TailwindCSS  
+**Gov-Dashboard** ![dashboard](client-web/src/assets/govt_dashboard.png)
+
+**Leaderboard** ![leaderboard](client-web/src/assets/Leaderboard.png)
+
+🛠️ Technology Stack:
+
+**💻 Frontend:** React, Vite, PrimeReact, TailwindCSS  
 **🖥️ Backend:** Node.js, Express.js  
 **🗄️ Database:** MongoDB  
 **🔐 Authentication:** JWT  
@@ -59,4 +63,6 @@ Researchers also gain insights for future predictions and studies.
 **🗺️ Maps & Geolocation:** Google Maps API  
 **🚀 Deployment:** Node server + Vite PWA
 
-🚀 Repo Link: **Clone the repository** git clone https://github.com/KHUSHI-P15/Hackout.git
+🚀 Repo Link:
+
+**Clone the repository** git clone https://github.com/KHUSHI-P15/Hackout.git
