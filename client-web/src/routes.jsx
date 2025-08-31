@@ -15,6 +15,7 @@ import HomePage from './pages/HomePage';
 import ResolveReport from './pages/government/ResolveReport';
 import Dashboard from './pages/government/Dashboard';
 import DataInsights from './pages/government/DataInsights';
+import Leaderboard from './pages/Leaderboard';
 
 
 const routes = createBrowserRouter([
@@ -41,6 +42,10 @@ const routes = createBrowserRouter([
 	{
 		path: '/home',
 		element: <HomePage />,
+	},
+	{
+		path: '/leaderboard',
+		element: <Leaderboard />,
 	},
 	// Admin routes
 	// {

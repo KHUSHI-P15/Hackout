@@ -46,14 +46,14 @@ export default function Sidebar({ isVisible, onClose }) {
 			{ name: 'Dashboard', route: '/citizen/dashboard', icon: 'LayoutDashboard' },
 			{ name: 'Add Report', route: '/citizen/add-report', icon: 'PlusCircle' },
 			{ name: 'History', route: '/citizen/history', icon: 'History' },
-			{ name: 'Leaderboard', route: '/citizen/leaderboard', icon: 'Trophy' },
+			{ name: 'Leaderboard', route: '/leaderboard', icon: 'Trophy' },
 			{ name: 'Community', route: '/citizen/community', icon: 'Users' },
 		],
 		ngo: [
 			{ name: 'Dashboard', route: '/ngo/dashboard', icon: 'LayoutDashboard' },
 			{ name: 'Verify Reports', route: '/ngo/verify-reports', icon: 'CheckCheck' },
 			{ name: 'Community', route: '/ngo/community', icon: 'PenSquare' },
-			{ name: 'Leaderboard', route: '/ngo/leaderboard', icon: 'Trophy' },
+			{ name: 'Leaderboard', route: '/leaderboard', icon: 'Trophy' },
 		],
 		government: [
 			{ name: 'Dashboard', route: '/government/dashboard', icon: 'LayoutDashboard' },

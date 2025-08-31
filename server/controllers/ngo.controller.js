@@ -1,5 +1,6 @@
 const Report = require('../models/report.model');
 const reportsModel = require('../models/report.model');
+const PointsLog = require('../models/pointsLog.model');
 const AIValidation = require('../models/aiValidation.model');
 const MangroveAIService = require('../services/ai.service');
 
@@ -144,6 +145,32 @@ async function verifyReport(req, res) {
 		}
 
 		await reportsModel.findByIdAndUpdate(reportId, updateData);
+
+		// Award points for verification (only if approved)
+		if (decision === 'approved') {
+			try {
+				// Give 50 points to the NGO for verification
+				const ngoPointsLog = new PointsLog({
+					user: ngoUserId,
+					action: 'report_verified',
+					points: 50
+				});
+				await ngoPointsLog.save();
+
+				// Give 50 points to the original report creator for verified report
+				const reportCreatorPointsLog = new PointsLog({
+					user: report.createdBy,
+					action: 'report_verified',
+					points: 50
+				});
+				await reportCreatorPointsLog.save();
+				
+				console.log('✅ 50 points awarded to NGO and report creator for verification');
+			} catch (pointsError) {
+				console.error('❌ Error awarding verification points:', pointsError);
+				// Don't fail the verification if points fail
+			}
+		}
 
 		// Update AI validation with human feedback
 		if (aiValidation) {

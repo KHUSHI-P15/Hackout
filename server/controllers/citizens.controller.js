@@ -1,4 +1,5 @@
 const reportsModel = require('../models/report.model');
+const PointsLog = require('../models/pointsLog.model');
 const MangroveAIService = require('../services/ai.service');
 
 // Initialize AI service
@@ -75,6 +76,20 @@ async function addReport(req, res, next) {
 		// Save the report first to get an ID
 		await newReport.save();
 		console.log('Report saved successfully:', newReport);
+
+		// Award 50 points for report submission
+		try {
+			const pointsLog = new PointsLog({
+				user: createdBy,
+				action: 'report_added',
+				points: 50
+			});
+			await pointsLog.save();
+			console.log('✅ 50 points awarded for report submission');
+		} catch (pointsError) {
+			console.error('❌ Error awarding points:', pointsError);
+			// Don't fail the report creation if points fail
+		}
 
 		// Process with AI if there are images
 		let aiAnalysis = null;
