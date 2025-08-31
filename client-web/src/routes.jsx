@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { loginLoader, verifyLoader } from './loaders/verify.loader';
+// import { loginLoader, verifyLoader } from './loaders/verify.loader';
 import ErrorElement from './components/ErrorElement';
 // import Home from './pages/Home';
 import Login from './pages/auth/Login';
@@ -47,6 +47,10 @@ const routes = createBrowserRouter([
 		path: '/leaderboard',
 		element: <Leaderboard />,
 	},
+		{
+		path: '/community',
+		element: <CommunityPage />,
+	},
 	// Admin routes
 	// {
 	// 	path: '/admin',
@@ -84,7 +88,7 @@ const routes = createBrowserRouter([
 		children: [
 			{ path: 'dashboard', element: <NGODashboard /> },
 			{ path: 'verify-reports', element: <NGOReportsPage /> },
-			{ path: 'community', element: <CommunityPage /> },
+			// { path: 'community', element: <CommunityPage /> },
 			// { path: 'institute/:id/departments', element: <AdminDepartment /> },
 			// {
 			// 	path: 'institute/:instituteId/department/:departmentId',
